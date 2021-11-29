@@ -6,7 +6,7 @@ var pool = mysql.createPool({
   password: "KdcgjxoZzh",
   database: "Em6vInuMcj",
 });
-
+//changes
 pool.getConnection(function (err) {
   if (err) {
     throw err;
