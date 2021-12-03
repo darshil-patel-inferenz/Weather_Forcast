@@ -18,9 +18,11 @@ app.get("/", (req, res) => {
   res.send("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
 });
 app.post("/postData", (req, res) => {
+  let timestamp = new Date();
   const inputData = {
     Temperature: req.body.Temperature,
     Humidity: req.body.Humidity,
+    TimeStamp:timestamp
   };
 
   var sql = "INSERT INTO Weather_Forcast SET ?";
