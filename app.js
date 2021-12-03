@@ -73,7 +73,7 @@ app.get("/getLastEntry", (req, res) => {
 app.get("/alertMsg", (req, res) => {
   var options = {
     authorization: process.env.OTP_KEY,
-    message: "Demo",
+    message: "ALERT ! High Temperature Detected ",
     numbers: ["9824455339"],
   };
   fast2sms.sendMessage(options);
