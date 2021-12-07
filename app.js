@@ -39,7 +39,7 @@ app.post("/postData", (req, res) => {
   });
 });
 app.get("/getData", (req, res) => {
-  var sql = "SELECT * FROM Weather_Forcast";
+  var sql = "SELECT * FROM Weather_Forcast ORDER BY Id DESC";
 
   pool.getConnection((err, connection) => {
     if (err) throw err;
