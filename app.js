@@ -15,14 +15,47 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false, limit: "20mb" }));
 
 app.get("/", (req, res) => {
-  res.send("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+  res.send("Hello");
 });
 app.post("/postData", (req, res) => {
   const inputData = {
     Temperature: req.body.Temperature,
     Humidity: req.body.Humidity,
-    TimeStamp:req.body.TimeStamp
+    TimeStamp: req.body.TimeStamp,
   };
+  var request = require("request");
+  var options = {
+    method: "GET",
+    url: "https://weather-anamoly-detetctor.herokuapp.com/",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      Temperature: inputData.Temperature,
+      Humidity: inputData.Humidity,
+    }),
+  };
+  request(options, function (error, response) {
+    if (error) throw new Error(error);
+    //console.log(response.body);
+    const forSms = response.body.replace(/"/g, "").trim();
+
+    if (inputData.Temperature > 30 || inputData.Humidity > 50 ) {
+      console.log("Anamoly Detected");
+      var request = require("request");
+      var options = {
+        method: "POST",
+        url: "https://prod-13.northcentralus.logic.azure.com:443/workflows/d442f96a4a8f49ca95a53762506f4d80/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=TOvQ4ufoW7_VUParW60B-F1PgB6I2pfEPbvO4zow9Bc",
+        headers: {},
+      };
+      request(options, function (error, response) {
+        if (error) throw new Error(error);
+        console.log(response.body);
+      });
+    } else {
+      console.log(forSms, "Not Detected");
+    }
+  });
 
   var sql = "INSERT INTO Weather_Forcast SET ?";
 
@@ -78,7 +111,7 @@ app.get("/alertMsg", (req, res) => {
     numbers: ["9824455339"],
   };
   fast2sms.sendMessage(options);
-  res.json(message)
+  res.json(message);
 });
 
 module.exports = app;
