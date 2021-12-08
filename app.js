@@ -41,6 +41,7 @@ app.post("/postData", (req, res) => {
     const forSms = response.body.replace(/"/g, "").trim();
 
     if (inputData.Temperature > 30 || inputData.Humidity > 50 ) {
+
       console.log("Anamoly Detected");
       var request = require("request");
       var options = {
@@ -52,6 +53,17 @@ app.post("/postData", (req, res) => {
         if (error) throw new Error(error);
         console.log(response.body);
       });
+      var options = {
+        'method': 'GET',
+        'url': 'https://iotforcast.herokuapp.com/alertMsg',
+        'headers': {
+        }
+      };
+      request(options, function (error, response) {
+        if (error) throw new Error(error);
+        console.log(response.body);
+      });
+      
     } else {
       console.log(forSms, "Not Detected");
     }
@@ -107,11 +119,11 @@ app.get("/getLastEntry", (req, res) => {
 app.get("/alertMsg", (req, res) => {
   var options = {
     authorization: process.env.OTP_KEY,
-    message: "ALERT ! High Temperature Detected ",
+    message: "ALERT ! Anomaly Detected ",
     numbers: ["9824455339"],
   };
   fast2sms.sendMessage(options);
-  res.json(message);
+  res.json({msg:options.message,status:true});
 });
 
 module.exports = app;
